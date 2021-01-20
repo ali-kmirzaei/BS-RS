@@ -29,11 +29,8 @@ class OrderController extends Controller
         // set genres scores
         $ugs = UG::all();
         $cnt = 0;
-        $total = 0;
         $genre_scores = array();
-        foreach ( $ugs as $ug ){
-            $total += $ug->cnt;
-        }
+        $total = $ugs->sum('cnt');
         // GenresScoreBoard Create:
         foreach ( $ugs as $ug ){
             $score = $ug->cnt / $total;

@@ -73,7 +73,7 @@ Route::namespace('Admin')->prefix('adminPanel')->group(function () {
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////// Other
 
-Route::prefix('other')->group(function () {
+Route::namespace('Client')->prefix('other')->group(function () {
     Route::get('/add_genres','BookGenreController@add_genre')->name('add_genre');
     Route::get('/add_test_books','BookGenreController@add_test_books');
 });
