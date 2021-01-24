@@ -21,7 +21,7 @@ class UserBook extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['book_id','user_id']);
+//            $table->unique(['book_id','user_id']);
         });
     }
 

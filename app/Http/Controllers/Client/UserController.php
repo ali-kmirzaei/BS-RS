@@ -28,7 +28,6 @@ class UserController extends Controller
     public function buy_book($id)
     {
         $user_id = Auth::id();
-
         // Add Book:
         $new_data = [
             'book_id' => (int)$id ,
@@ -43,6 +42,7 @@ class UserController extends Controller
             return redirect()->back()->with('sanitiza','مشکلی رخ داده، بعدا دوباره امتحان کنید');
         }
         return redirect()->back()->with('success', 'کتاب مورد نظر به لیست شما افزوده شد');
+
     }
 
     public function bought_books()

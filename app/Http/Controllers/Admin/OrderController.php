@@ -6,7 +6,6 @@ use App\Genre;
 use App\Http\Controllers\Controller;
 use App\Imports\BooksImport;
 use App\Order;
-use App\Tmp;
 use App\user_genre as UG;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
