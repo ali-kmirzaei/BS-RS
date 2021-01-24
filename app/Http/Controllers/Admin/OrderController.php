@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Genre;
 use App\Http\Controllers\Controller;
 use App\Imports\BooksImport;
+use App\Order;
 use App\Tmp;
 use App\user_genre as UG;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class OrderController extends Controller
         Excel::import($import, $path);
 
         // Calculate books Score
-        $new_books = Tmp::all();
+        $new_books = Order::all();
         foreach ($new_books as $book){
             $book_score = 0;
             $genres = $book->genres;
@@ -61,11 +62,11 @@ class OrderController extends Controller
                     }
                 }
             }
-            Tmp::find($book->id)->update(['score' => $book_score]);
+            Order::find($book->id)->update(['score' => $book_score]);
         }
 
         // Sort book_scores array:
-        $new_books = Tmp::all();
+        $new_books = Order::all();
         for($j=0 ; $j<count($new_books) ; $j+=1) {
             for ($i = 1; $i < count($new_books); $i += 1) {
                 if ($new_books[$i]->score > $new_books[$i - 1]->score) {
@@ -77,7 +78,7 @@ class OrderController extends Controller
         }
 
         // Empty temp table:
-        Tmp::truncate();
+        Order::truncate();
 
         // return view!
         return view('adminPanel/show_suggestion',compact('new_books'));
