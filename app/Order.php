@@ -9,6 +9,6 @@ class Order extends Model
     public $timestamps = false;
     protected $table = 'orders';
     protected $fillable = [
-        'name','genres','cost','author','score'
+        'name','genres','author','cost','score'
     ];
 }

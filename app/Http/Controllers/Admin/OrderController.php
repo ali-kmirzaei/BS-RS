@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Genre;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\functions;
 use App\Imports\BooksImport;
 use App\Order;
 use App\user_genre as UG;
@@ -35,11 +36,21 @@ class OrderController extends Controller
         foreach ( $ugs as $ug ){
             $score = $ug->cnt / $total;
             $cnt += $score;
-            $element = [
-                'genre' => $ug->genre_id ,
-                'score' => $score
-            ];
-            array_push($genre_scores, $element);
+            $flag = 0;
+            foreach ($genre_scores as $genre_score){
+                if( $ug->genre_id == $genre_score['genre'] ){
+                    $genre_score['score'] *= 2;
+                    $flag = 1;
+                    break;
+                }
+            }
+            if( $flag == 0 ){
+                $element = [
+                    'genre' => $ug->genre_id ,
+                    'score' => $score
+                ];
+                array_push($genre_scores, $element);
+            }
         }
         // Read from excel
         $path = $request->file('file')->getRealPath();
@@ -54,7 +65,7 @@ class OrderController extends Controller
             $genres = explode('-',$genres);
             foreach ($genres as $genre){
                 $genre = Genre::where('genre_name', $genre)->first();
-                if($genre->count() != 0){
+                if($genre != NULL){
                     $index = functions::find_index($genre_scores, $genre->id);
                     if ( $index != -1 ){
                         $book_score += $genre_scores[$index]['score'];
