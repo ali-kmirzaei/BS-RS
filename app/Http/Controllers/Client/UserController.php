@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\suggestion_func;
 use App\User;
 use Illuminate\Http\Request;
 use App\Genre;
@@ -121,54 +122,16 @@ class UserController extends Controller
         $user_id = Auth::id();
         $ugs = UG::where('user_id',$user_id)->get();
 
-        $cnt = 0;
-        $genre_scores = array();
-        $book_scores = array();
-        $total = $ugs->sum('cnt');
-
         // GenresScoreBoard Create:
-        foreach ( $ugs as $ug ){
-            $score = $ug->cnt / $total;
-            $cnt += $score;
-            $element = [
-                'genre' => $ug->genre_id ,
-                'score' => $score
-            ];
-            array_push($genre_scores, $element);
-        }
-
+        $genre_scores = suggestion_func::create_genre_score_borad($ugs);
 
         // BooksScoreBoard Create:
         $books = Book::all();
-        foreach ($books as $book){
-            $genres = $book->genres()->get();
-            $score = 0;
-            foreach ($genres as $genre){
-                foreach ($genre_scores as $genre_score){
-                    if ( $genre->id == $genre_score['genre'] ){
-                        $score += $genre_score['score'];
-                    }
-                }
-            }
-            if ($score > 0){
-                $element = [
-                    'book' => $book ,
-                    'score' => $score
-                ];
-                array_push($book_scores, $element);
-            }
-        }
+        $books = suggestion_func::calculate_books_score($books, $genre_scores);
 
         // sort book_scores array:
-        for($j=0 ; $j<count($book_scores) ; $j+=1) {
-            for ($i = 1; $i < count($book_scores); $i += 1) {
-                if ($book_scores[$i]['score'] > $book_scores[$i - 1]['score']) {
-                    $tmp = $book_scores[$i]['score'];
-                    $book_scores[$i]['score'] = $book_scores[$i - 1]['score'];
-                    $book_scores[$i - 1]['score'] = $tmp;
-                }
-            }
-        }
+        $book_scores = suggestion_func::books_sort($books);
+
         // BooksSuggestions:
         return view('suggestions',compact('book_scores'));
     }
